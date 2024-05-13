@@ -1,0 +1,45 @@
+.active {
+    /* background-color: rgb(223, 223, 223); */
+    color: #2d1fe7;
+    text-decoration-line: underline;
+}
+
+.customFixedButton {
+    background: #f00202;
+    border: none;
+    display: inline-block;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transform: skew(-21deg);
+    box-shadow: rgba(255, 255, 255, 0.25) 0px 54px 55px, rgba(255, 255, 255, 0.12) 0px -12px 30px, rgba(255, 255, 255, 0.12) 0px 4px 6px, rgba(255, 255, 255, 0.17) 0px 12px 13px, rgba(255, 255, 255, 0.09) 0px -3px 5px;
+}
+
+.customFixedButton span {
+    display: inline-block;
+    white-space: nowrap;
+    transform: skew(21deg);
+}
+
+.customFixedButton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 100%;
+    left: 0;
+    background: rgb(123, 216, 79);
+    opacity: 0;
+    z-index: -1;
+    transition: all 0.5s;
+}
+
+.customFixedButton:hover {
+    color: #fff;
+}
+
+.customFixedButton:hover::before {
+    left: 0;
+    right: 0;
+    opacity: 1;
+}

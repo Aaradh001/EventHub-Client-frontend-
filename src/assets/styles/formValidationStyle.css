@@ -1,0 +1,17 @@
+/* Form validation error  open */
+
+
+.span-error {
+    color: rgb(247, 36, 36);
+    font-size: medium;
+    display: none;
+}
+
+input:invalid[focused="true"] ~ .span-error{
+    display: block;
+}
+  /* input:invalid ~ .submit-btn:disabled */
+
+
+
+/* Form validation error   close */
