@@ -5,14 +5,14 @@ import regBg from "../../assets/images/regPage/regbg.jpg"
 import { jwtDecode } from "jwt-decode";
 import { MdOutlineStart } from "react-icons/md";
 import { BASE_URL } from "../../constants/constants";
-import FormInput from "../../../../../Client-frontend/EventHub-Client/src/components/subComponents/FormInput";
+import FormInput from "../../components/subComponents/FormInput";
 import { GoogleLogin } from '@react-oauth/google';
 import { ToastContainer, toast } from 'react-toastify';
-import { TError, TSuccess } from '../../../../../Client-frontend/EventHub-Client/src/components/subFeatureComponents/Toastify';
+import { TError, TSuccess } from '../../components/subFeatureComponents/Toastify';
 import { useDispatch } from "react-redux";
-import { set_Authentication } from "../../../../../Client-frontend/EventHub-Client/src/redux/authentication/authenticationSlice";
-import LoginHeader from "../../../../../Client-frontend/EventHub-Client/src/components/LoginHeader";
-import Footer from "../../../../../Client-frontend/EventHub-Client/src/components/Footer";
+import { set_Authentication } from "../../redux/authentication/authenticationSlice";
+import LoginHeader from "../../components/LoginHeader";
+import Footer from "../../components/Footer";
 function Register() {
   const [values, setValues] = useState({
     first_name: "",

@@ -13,11 +13,13 @@ import Register from "../pages/client/Register";
 import Login from "../pages/client/Login";
 import Profile from "../pages/client/Profile";
 import LoaderHome from "../pages/common/LoaderHome";
+
 import EventLayout from "../pages/event/EventLayout";
 import DashboardLayout from "./DashboardLayout";
 const Layout = lazy(() => import('./Layout'));
 const Home = lazy(() => import('../pages/client/Home'));
 const Requirement = lazy(() => import('../pages/event/Requirement'));
+const Venues = lazy(() => import("../pages/venues/AllVenues"))
 
 
 function ClientWrapper() {
@@ -96,6 +98,10 @@ function ClientWrapper() {
           <Route path="event" element={<EventLayout />}>
             <Route index element={<Suspense fallback={<LoaderHome />}><Requirement /></Suspense>} />
           </Route>
+
+          <Route path="venues" element={<Suspense fallback={<LoaderHome />}><Venues /></Suspense>} />
+
+
         </Route>
         {/* Custom 404 page */}
         <Route path="*" element={<NotFoundPage />} />

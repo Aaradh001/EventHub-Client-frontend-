@@ -3,16 +3,16 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import { useDispatch } from "react-redux";
-import { set_Authentication } from "../../../../../Client-frontend/EventHub-Client/src/redux/authentication/authenticationSlice";
+import { set_Authentication } from "../../redux/authentication/authenticationSlice";
 import { jwtDecode } from "jwt-decode";
-import { BASE_URL } from "../../../../../Client-frontend/EventHub-Client/src/constants/constants";
-import FormInput from "../../../../../Client-frontend/EventHub-Client/src/components/subComponents/FormInput";
+import { BASE_URL } from "../../constants/constants";
+import FormInput from "../../components/subComponents/FormInput";
 import { IoMdLogIn } from "react-icons/io";
-import LoginHeader from "../../../../../Client-frontend/EventHub-Client/src/components/LoginHeader";
-import Footer from "../../../../../Client-frontend/EventHub-Client/src/components/Footer";
+import LoginHeader from "../../components/LoginHeader";
+import Footer from "../../components/Footer";
 import { GoogleLogin } from '@react-oauth/google';
 import { ToastContainer, toast } from 'react-toastify';
-import { TError, TSuccess } from '../../../../../Client-frontend/EventHub-Client/src/components/subFeatureComponents/Toastify';
+import { TError, TSuccess } from '../../components/subFeatureComponents/Toastify';
 
 function Login() {
   const [values, setValues] = useState({
