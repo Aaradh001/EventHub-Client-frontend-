@@ -12,6 +12,12 @@ import "../../assets/styles/customStyle.css"
 
 
 function Home() {
+  const [eventLaunchData, setEventLaunchData] = useState({
+    eventName: "",
+    eventType: "",
+    startDate: new Date(),
+    endDate: new Date()
+  })
   const authentication_user = useSelector((state) => state.authentication_user);
   const [launchToggle, setLaunchToggle] = useState(false)
   const [serviceTypes, setServiceTypes] = useState([]);
@@ -27,6 +33,15 @@ function Home() {
 
     )
   }
+
+  const handleInputChange = (e) => {
+    const { name } = e.target;
+    setEventLaunchData((prevData) => ({
+      ...prevData,
+      [name]: e.target.value,
+    }))
+  };
+
 
   async function fetchServiceTypes() {
     try {
@@ -82,29 +97,50 @@ function Home() {
         <div className="p-3 sm:mb-3 mb-6 md:mb-10 font-black tracking-wider uppercase mb-2 bg-gray-300 w-full rounded-md">
           Create an event
         </div>
-
-
-        <div className="p-3 md:pl-4 md:pr-10 mb-2 md:h-3/5 flex flex-col justify-start gap-3 bg-gray-200 w-full rounded-md">
-          <div>
-            <label className="p-1 align-middle font-bold" htmlFor="addService">Event Name</label>
-            <div className="bg-white mt-2 w-full shadow-xl rounded-md">
-              <input type="text" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" />
+        <form onSubmit={() => launchEvent()}>
+          <div className="p-3 md:pl-4 md:pr-10 mb-2 md:h-3/5 flex flex-col justify-start gap-3 bg-gray-200 w-full rounded-md">
+            <div>
+              <label className="p-1 align-middle font-bold" htmlFor="addService">Event Name</label>
+              <div className="bg-white mt-2 w-full shadow-xl rounded-md">
+                <input type="text" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" />
+              </div>
             </div>
-          </div>
-          <div>
-            <label className="p-1 align-middle font-bold" htmlFor="addService">Event Type</label>
-            <div className="bg-white mt-2 w-full shadow-xl rounded-md">
-              {/* <input type="text" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" /> */}
-              <select name="" className="placeholder:text-slate-400 border-0 w-full placeholde
-              r-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" id="">
-                <option value="">Choose event type</option>
-                {serviceTypes.map((serviceType, index) => (
-                  <option key={index} value={serviceType.name}> {serviceType.name}</option>
-                ))}
-              </select>
+            <div className="grid gap-4 grid-cols-2 w-full">
+              <div className="w-full">
+                <label className="p-1 align-middle font-bold" htmlFor="addService">Start date</label>
+                <div className="bg-white mt-2 w-full shadow-xl rounded-md">
+                  <input type="date" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" />
+                </div>
+              </div>
+              <div className="w-full">
+                <label className="p-1 align-middle font-bold" htmlFor="addService">End date</label>
+                <div className="bg-white mt-2 w-full shadow-xl rounded-md">
+                  <input type="date" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" />
+                </div>
+              </div>
             </div>
+            <div>
+              <label className="p-1 align-middle font-bold" htmlFor="addService">Event Type</label>
+              <div className="bg-white mt-2 w-full shadow-xl rounded-md">
+                {/* <input type="text" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" /> */}
+                <select
+                  name="eventName"
+                  value={eventLaunchData.eventType}
+                  onChange={(e) => handleInputChange(e)}
+
+                  className="placeholder:text-slate-400 border-0  placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md"
+                  id=""
+                >
+                  <option value="">Choose event type</option>
+                  {serviceTypes.map((serviceType, index) => (
+                    <option key={index} value={serviceType.id}> {serviceType.name}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
           </div>
-        </div>
+        </form>
       </div>
       <section className="relative h-fit w-full">
 
