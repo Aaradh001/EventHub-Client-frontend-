@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import CarouselComponent from "../../components/subFeatureComponents/Carousel";
 import FlowAnimation from "../../components/subFeatureComponents/FlowAnimation";
@@ -16,13 +16,17 @@ function Home() {
     eventName: "",
     eventType: "",
     startDate: new Date(),
-    endDate: new Date()
+    endDate: new Date(),
+    venue: ""
   })
   const authentication_user = useSelector((state) => state.authentication_user);
+  const event = useSelector((state) => state.event);
   const [launchToggle, setLaunchToggle] = useState(false)
   const [serviceTypes, setServiceTypes] = useState([]);
   const baseURL = BASE_URL;
   const token = localStorage.getItem("access");
+
+
 
   function handleToggleForm() {
     if (!launchToggle) {
@@ -58,7 +62,7 @@ function Home() {
         });
     } catch (error) {
       TError("Data fetching failed !!")
-      console.log("the error is  :", error);
+      // console.log("the error is  :", error);
     }
   };
 
@@ -84,20 +88,20 @@ function Home() {
       </div>
       <div className={`${launchToggle ? 'fixed ' : 'hidden'} bottom-7 p-5 right-7 z-40 bg-black bg-opacity-60 rounded-lg md:w-64 md:h-64 xl:w-96 xl:h-96`}>
         {/* <div> */}
-        <button
-          className="p-1 ml-auto bg-transparent border-0 text-black align-middle opacity-40 float-right text-3xl leading-none font-semibold outline-none focus:outline-none hover:opacity-100"
-          onClick={() => setLaunchToggle(false)}
-
-        >
-          <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
-            ×
-          </span>
-        </button>
-        {/* </div> */}
-        <div className="p-3 sm:mb-3 mb-6 md:mb-10 font-black tracking-wider uppercase mb-2 bg-gray-300 w-full rounded-md">
-          Create an event
-        </div>
         <form onSubmit={() => launchEvent()}>
+          <button
+            className="p-1 ml-auto bg-transparent border-0 text-black align-middle opacity-40 float-right text-3xl leading-none font-semibold outline-none focus:outline-none hover:opacity-100"
+            onClick={() => setLaunchToggle(false)}
+
+          >
+            <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
+              ×
+            </span>
+          </button>
+          {/* </div> */}
+          <div className="p-3 sm:mb-3 mb-6 md:mb-10 font-black tracking-wider uppercase mb-2 bg-gray-300 w-full rounded-md">
+            Create an event
+          </div>
           <div className="p-3 md:pl-4 md:pr-10 mb-2 md:h-3/5 flex flex-col justify-start gap-3 bg-gray-200 w-full rounded-md">
             <div>
               <label className="p-1 align-middle font-bold" htmlFor="addService">Event Name</label>
