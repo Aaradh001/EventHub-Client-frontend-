@@ -78,7 +78,15 @@ function Login() {
             profileImage: decodedData.profile_pic,
           })
         );
-        navigate("/");
+        const savedData = sessionStorage.getItem('eventBasicdata')
+        const eventBasicdata = savedData ? JSON.parse(savedData) : null
+        if(eventBasicdata){
+          navigate(eventBasicdata.nextPath)
+          sessionStorage.removeItem('eventBasicdata')
+
+        }else{
+          navigate("/");
+        }
         TSuccess("You have successfully logged in !!")
         return res;
       }

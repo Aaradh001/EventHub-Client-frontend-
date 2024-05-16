@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CarouselComponent from "../../components/subFeatureComponents/Carousel";
 import FlowAnimation from "../../components/subFeatureComponents/FlowAnimation";
 import SlickSlider from "../../components/subFeatureComponents/SlickSlider";
@@ -13,19 +13,87 @@ import "../../assets/styles/customStyle.css"
 
 function Home() {
   const [eventLaunchData, setEventLaunchData] = useState({
-    eventName: "",
-    eventType: "",
-    startDate: new Date(),
-    endDate: new Date(),
-    venue: ""
+    name: "",
+    event_cat: "",
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: new Date().toISOString().split('T')[0],
+    guest_count: "",
+    // venue: ""
   })
+  const navigate = useNavigate()
   const authentication_user = useSelector((state) => state.authentication_user);
   const event = useSelector((state) => state.event);
   const [launchToggle, setLaunchToggle] = useState(false)
   const [serviceTypes, setServiceTypes] = useState([]);
   const baseURL = BASE_URL;
   const token = localStorage.getItem("access");
-
+  const inputs = [
+    // type="text"
+    // id="name"
+    // onChange={handleInputChange}
+    // placeholder="Enter the name of your service..."
+    // className="placeholder:text-slate-400 border-0 placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md"
+    {
+      keyId: 1,
+      id: "name",
+      label: "Event Name",
+      placeholder: "A name for your event . .",
+      type: "text",
+      name: "name",
+      labelclass: "block text-sm font-medium text-gray-400",
+      className: "bg-white text-sm placeholder:text-slate-400 my-1 hover:shadow-lg border-0 placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md",
+      error: "Allowed characters: A-Z, a-z, Numbers: 0-9.",
+      wrapperClass: "sm:col-span-2",
+      required: true,
+      pattern: "^[A-Za-z0-9]+$",
+    },
+    {
+      keyId: 2,
+      id: "start_date",
+      label: "Start date",
+      // placeholder: "Enter the first name . . .",
+      type: "date",
+      name: "start_date",
+      labelclass: "block text-sm font-medium text-gray-400",
+      className: "bg-white text-sm placeholder:text-slate-400 my-1 hover:shadow-lg border-0 placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md",
+      min: new Date().toISOString().split('T')[0],
+      error: "Provide a valid start date greater than today!",
+      wrapperClass: "w-full",
+      required: true,
+      // pattern: "^[A-Za-z]{2,}$",
+    },
+    {
+      keyId: 3,
+      id: "end_date",
+      label: "End date",
+      // placeholder: "Enter the first name . . .",
+      type: "date",
+      name: "end_date",
+      labelclass: "block text-sm font-medium text-gray-400",
+      className: "bg-white text-sm placeholder:text-slate-400 my-1 hover:shadow-lg border-0 placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md",
+      min: new Date().toISOString().split('T')[0],
+      // className: "mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300",
+      error: "Provide a valid end date greater than today!",
+      required: true,
+      wrapperClass: "w-full",
+      // pattern: "^[A-Za-z]{2,}$",
+    },
+    {
+      keyId: 4,
+      id: "guest_count",
+      label: "Guest Count",
+      placeholder: "Expecting count of guests . . .",
+      type: "number",
+      name: "guest_count",
+      error: "Count should be valid number and greater than 10 !",
+      wrapperClass: "sm:col-span-2",
+      min: 5,
+      // className: "mt-1 p-2 w-full border rounded-md focus:border-gray-200 focus:outline-none focus:ring-4 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300",
+      className: "bg-white text-sm placeholder:text-slate-400 my-1 hover:shadow-lg border-0 placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md",
+      labelclass: "block text-sm font-medium text-gray-400",
+      required: true,
+    },
+  ];
 
 
   function handleToggleForm() {
@@ -37,6 +105,53 @@ function Home() {
 
     )
   }
+  async function launchEvent(e) {
+    e.preventDefault()
+    if (authentication_user.isAuthenticated) {
+      try {
+        const res = await axios.post(
+          baseURL + "event/events/",
+          eventLaunchData, {
+          headers: {
+            "Content-type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        }
+        );
+        if (res.status === 201) {
+
+          console.log(res);
+          alert("yufewgfwue")// return res;
+          // state: res.data.Message,
+        };
+      }
+      catch (error) {
+        if (error.response.status === 406) {
+          console.log(error);
+          Object.keys(error.response.data).forEach(key => {
+            if (typeof (error.response.data[key]) === 'object') {
+              Object.keys(error.response.data[key]).forEach(subKey => {
+                (error.response.data[key][subKey]).forEach(errorMessage => {
+                  error.push(errorMessage)
+                })
+              })
+            }
+          })
+        } else {
+          console.log(error);
+        }
+      }
+
+
+    } else {
+      sessionStorage.getItem('eventBasicdata') && sessionStorage.removeItem('eventBasicdata');
+      sessionStorage.setItem('eventBasicdata', JSON.stringify({
+        data: eventLaunchData,
+        nextPath: '/requirements'
+      }));
+      navigate("/login")
+    }
+  }
 
   const handleInputChange = (e) => {
     const { name } = e.target;
@@ -46,6 +161,7 @@ function Home() {
     }))
   };
 
+  console.log("the current component main state", eventLaunchData);
 
   async function fetchServiceTypes() {
     try {
@@ -68,7 +184,7 @@ function Home() {
 
   useEffect(() => {
     fetchServiceTypes();
-
+    checkEventCreated();
   }, [])
 
 
@@ -81,59 +197,61 @@ function Home() {
 
   return (
     <>
-      <div className="fixed bottom-12 right-12 rounded-full z-50">
-        <button onClick={() => handleToggleForm()} className="customFixedButton text-xs md:text-md font-bold md:px-4 py-2">
-          <span>{launchToggle ? 'Launch Now' : 'Create an event'}</span>
-        </button>
-      </div>
-      <div className={`${launchToggle ? 'fixed ' : 'hidden'} bottom-7 p-5 right-7 z-40 bg-black bg-opacity-60 rounded-lg md:w-64 md:h-64 xl:w-96 xl:h-96`}>
+      {!launchToggle && (
+        <div className="fixed bottom-12 right-12 rounded-full z-50">
+          <button onClick={() => handleToggleForm()} className="customFixedButton text-xs md:text-md font-bold md:px-4 py-2">
+            <span>Create an event</span>
+          </button>
+        </div>)
+      }
+      <div className={`${launchToggle ? 'fixed ' : 'hidden'} bottom-7 p-5 right-7 z-40 bg-black bg-opacity-60 rounded-lg md:w-64 md:h-fit xl:w-96`}>
         {/* <div> */}
-        <form onSubmit={() => launchEvent()}>
+        <form onSubmit={(e) => launchEvent(e)}>
           <button
+            type="button"
             className="p-1 ml-auto bg-transparent border-0 text-black align-middle opacity-40 float-right text-3xl leading-none font-semibold outline-none focus:outline-none hover:opacity-100"
             onClick={() => setLaunchToggle(false)}
-
           >
             <span className="bg-transparent text-black  h-6 w-6 text-2xl block outline-none focus:outline-none">
               ×
             </span>
           </button>
           {/* </div> */}
-          <div className="p-3 sm:mb-3 mb-6 md:mb-10 font-black tracking-wider uppercase mb-2 bg-gray-300 w-full rounded-md">
+          <div className="p-3 sm:mb-3 mb-6 md:mb-10 font-black tracking-wider uppercase bg-gray-300 w-full rounded-md">
             Create an event
           </div>
           <div className="p-3 md:pl-4 md:pr-10 mb-2 md:h-3/5 flex flex-col justify-start gap-3 bg-gray-200 w-full rounded-md">
-            <div>
-              <label className="p-1 align-middle font-bold" htmlFor="addService">Event Name</label>
-              <div className="bg-white mt-2 w-full shadow-xl rounded-md">
-                <input type="text" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" />
-              </div>
-            </div>
             <div className="grid gap-4 grid-cols-2 w-full">
-              <div className="w-full">
-                <label className="p-1 align-middle font-bold" htmlFor="addService">Start date</label>
-                <div className="bg-white mt-2 w-full shadow-xl rounded-md">
-                  <input type="date" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" />
-                </div>
-              </div>
-              <div className="w-full">
-                <label className="p-1 align-middle font-bold" htmlFor="addService">End date</label>
-                <div className="bg-white mt-2 w-full shadow-xl rounded-md">
-                  <input type="date" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" />
-                </div>
-              </div>
+
+              {inputs.map((input) => {
+                return (
+                  <div key={input.keyId} className={input.wrapperClass}>
+                    <div className="mt-2 w-full rounded-md">
+                      <label className={input.labelclass} htmlFor={input.id}>{input.label}</label>
+                      <input
+                        type={input.type}
+                        id={input.id}
+                        name={input.name}
+                        value={eventLaunchData[input.name]}
+                        onChange={handleInputChange}
+                        placeholder={input.placeholder}
+                        className={input.className}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             <div>
               <label className="p-1 align-middle font-bold" htmlFor="addService">Event Type</label>
               <div className="bg-white mt-2 w-full shadow-xl rounded-md">
                 {/* <input type="text" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" /> */}
                 <select
-                  name="eventName"
-                  value={eventLaunchData.eventType}
-                  onChange={(e) => handleInputChange(e)}
-
-                  className="placeholder:text-slate-400 border-0  placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md"
-                  id=""
+                  name="event_cat"
+                  value={eventLaunchData.event_cat}
+                  onChange={handleInputChange}
+                  className="placeholder:text-slate-400 text-sm border-0  placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md"
+                  id="event_cat"
                 >
                   <option value="">Choose event type</option>
                   {serviceTypes.map((serviceType, index) => (
@@ -142,12 +260,16 @@ function Home() {
                 </select>
               </div>
             </div>
-
+            <div className="rounded-full text-right">
+              <button type="submit" className="customFixedButton text-xs md:text-md font-bold md:px-4 py-2">
+                <span>submit</span>
+              </button>
+            </div>
           </div>
-        </form>
-      </div>
-      <section className="relative h-fit w-full">
+        </form >
+      </div >
 
+      <section className="relative h-fit w-full">
         <div className="h-56 sm:h-64 md:h-96 w-full">
           <CarouselComponent />
         </div>

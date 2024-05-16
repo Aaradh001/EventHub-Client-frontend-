@@ -93,8 +93,8 @@ function ClientWrapper() {
           <Route path="dashboard" element={<PrivateRoute> <DashboardLayout /> </PrivateRoute>} >
             <Route index element={<PrivateRoute> <Profile /> </PrivateRoute>} />
           </Route>
-          <Route path="event" element={<EventLayout />}>
-            <Route index element={<Suspense fallback={<LoaderHome />}><Requirement /></Suspense>} />
+          <Route path="event" element={<PrivateRoute> <EventLayout /> </PrivateRoute>}>
+            <Route path="requirements" element={<Suspense fallback={<LoaderHome />}><Requirement /></Suspense>} />
           </Route>
         </Route>
         {/* Custom 404 page */}

@@ -1,23 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../pages/common/Loader";
-
 function PrivateRoute({ children }) {
+  const navigate = useNavigate();
   const authentication_user = useSelector((state) => state.authentication_user);
 
-  if (authentication_user.loading) {
-    return (<Loader />)
+  useEffect(() => {
+    if (!authentication_user.isAuthenticated) {
+      console.log("loginnnnn");
+      navigate('/login');
+    }
+  }, [authentication_user.isAuthenticated, navigate]);
+
+  if (authentication_user.loading && authentication_user.isAuthenticated) {
+    return <Loader />;
   }
 
   if (!authentication_user.isAuthenticated) {
-    console.log("loginnnnn");
-    return <Navigate to="/login" />;
+    return null; // This ensures the component doesn't render anything before the navigation happens
   }
-  
-  // setTimeout(() => {
-    return children;
-  // }, 1000)
+
+  return children;
 }
 
 export default PrivateRoute;

@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 export const eventSlice = createSlice({
   name: "event",
   initialState: {
-    name: "mahendran",
+    launched:false,
+    name: "",
     thumbnail: null,
     startDate: null,
     endDate: null,
@@ -18,6 +19,7 @@ reducers: {
         state.endDate = action.payload.endDate;
         state.eventType = action.payload.eventType;
         state.guestCount = action.payload.guestCount;
+        state.launched - action.payload.launched;
     },
   },
 });
