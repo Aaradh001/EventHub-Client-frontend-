@@ -82,7 +82,7 @@ function Login() {
         const eventBasicdata = savedData ? JSON.parse(savedData) : null
         if(eventBasicdata){
           navigate(eventBasicdata.nextPath)
-          sessionStorage.removeItem('eventBasicdata')
+          // sessionStorage.removeItem('eventBasicdata')
 
         }else{
           navigate("/");

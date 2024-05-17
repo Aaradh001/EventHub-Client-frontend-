@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import PrivateRoute from "./PrivateRoute";
 import { useDispatch, useSelector } from "react-redux";
 import { set_Authentication } from "../redux/authentication/authenticationSlice";
+import { set_Event } from "../redux/event/eventSlice";
 import axios from "axios";
 import { BASE_URL } from "../constants/constants";
 // import Layout from "./Layout";
@@ -23,6 +24,7 @@ const Requirement = lazy(() => import('../pages/event/Requirement'));
 function ClientWrapper() {
   const dispatch = useDispatch();
   const authentication_user = useSelector((state) => state.authentication_user);
+  const event = useSelector((state) => state.event);
   const checkTokenValidation = async () => {
     const isTokenValid = await tokenValidate();
     if (!isTokenValid) {
@@ -71,12 +73,66 @@ function ClientWrapper() {
     }
   };
 
+
+  async function checkEventCreated(baseURL, token) {
+    try {
+      await axios.get(baseURL + "event/events", {
+        headers: {
+          authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (res.status == 200) {
+
+            console.log("from wrapper", res);
+            if (res.data.current_event){
+              dispatch(
+                set_Event({
+                  event_id: res.data.current_event.event_id,
+                  name: res.data.current_event.name,
+                  thumbnail: res.data.current_event.thumbnail,
+                  start_date: res.data.current_event.start_date,
+                  end_date: res.data.current_event.end_date,
+                  event_cat: res.data.current_event.event_cat,
+                  guest_count: res.data.current_event.guest_count,
+                  status : res.data.current_event.status,
+                  initiated: true,
+                  is_completed: res.data.current_event.is_completed
+                })
+              );
+            }
+          }
+        });
+    } catch (error) {
+      dispatch(
+        set_Event({
+          name: "",
+          thumbnail: null,
+          start_date: null,
+          end_date: null,
+          event_cat: null,
+          guest_count: null,
+          initiated:false,
+          is_completed: false,
+          status: ""
+        })
+      );
+    }
+  }
+
+
   useEffect(() => {
+    const token = localStorage.getItem("access");
     if (!authentication_user.isAuthenticated) {
       if (checkTokenValidation()) {
-        const token = localStorage.getItem("access");
         fetchUserData(BASE_URL, token);
       }
+    }
+
+    if (!event.launched) {
+      checkEventCreated(BASE_URL, token);
     }
   }, []);
 

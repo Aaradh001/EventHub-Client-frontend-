@@ -3,23 +3,29 @@ import { createSlice } from "@reduxjs/toolkit";
 export const eventSlice = createSlice({
   name: "event",
   initialState: {
-    launched:false,
+    event_id:"",
     name: "",
     thumbnail: null,
-    startDate: null,
-    endDate: null,
-    eventType: null,
-    guestCount: null
-},
+    start_date: null,
+    end_date: null,
+    event_cat: null,
+    guest_count: null,
+    initiated:false,
+    is_completed: false,
+    status: ""
+  },
 reducers: {
     set_Event: (state, action) => {
+        state.event_id = action.payload.event_id;
         state.name = action.payload.name;
         state.thumbnail = action.payload.thumbnail;
-        state.startDate = action.payload.startDate;
-        state.endDate = action.payload.endDate;
-        state.eventType = action.payload.eventType;
-        state.guestCount = action.payload.guestCount;
-        state.launched - action.payload.launched;
+        state.start_date = action.payload.start_date;
+        state.end_date = action.payload.end_date;
+        state.event_cat = action.payload.event_cat;
+        state.guest_count = action.payload.guest_count;
+        state.initiated = action.payload.initiated;
+        state.is_completed = action.payload.is_completed;
+        state.status = action.payload.status;
     },
   },
 });

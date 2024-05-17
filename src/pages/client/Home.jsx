@@ -15,8 +15,8 @@ function Home() {
   const [eventLaunchData, setEventLaunchData] = useState({
     name: "",
     event_cat: "",
-    start_date: new Date().toISOString().split('T')[0],
-    end_date: new Date().toISOString().split('T')[0],
+    start_date: new Date().toLocaleDateString('en-CA'),
+    end_date: new Date().toLocaleDateString('en-CA'),
     guest_count: "",
     // venue: ""
   })
@@ -105,6 +105,8 @@ function Home() {
 
     )
   }
+
+
   async function launchEvent(e) {
     e.preventDefault()
     if (authentication_user.isAuthenticated) {
@@ -115,31 +117,40 @@ function Home() {
           headers: {
             "Content-type": "application/json",
             authorization: `Bearer ${token}`,
+            Accept: "application/json",
+
           },
         }
         );
         if (res.status === 201) {
-
           console.log(res);
-          alert("yufewgfwue")// return res;
-          // state: res.data.Message,
+          dispatch(
+            set_Event({
+              event_id: res.data.event_id,
+              name: res.data.name,
+              thumbnail: res.data.thumbnail,
+              start_date: res.data.start_date,
+              end_date: res.data.end_date,
+              event_cat: res.data.event_cat,
+              guest_count: res.data.guest_count,
+              initiated: true,
+              is_completed: res.data.is_completed,
+              status: res.data.status
+            }))
+          sessionStorage.getItem('eventBasicdata') && sessionStorage.removeItem('eventBasicdata')
         };
       }
       catch (error) {
-        if (error.response.status === 406) {
-          console.log(error);
-          Object.keys(error.response.data).forEach(key => {
-            if (typeof (error.response.data[key]) === 'object') {
-              Object.keys(error.response.data[key]).forEach(subKey => {
-                (error.response.data[key][subKey]).forEach(errorMessage => {
-                  error.push(errorMessage)
-                })
-              })
-            }
-          })
-        } else {
-          console.log(error);
-        }
+        console.log(error);
+        TError(error.response.data)
+        setLaunchToggle(false)
+        setEventLaunchData({
+          name: "",
+          event_cat: "",
+          start_date: new Date().toLocaleDateString('en-CA'),
+          end_date: new Date().toLocaleDateString('en-CA'),
+          guest_count: "",
+        })
       }
 
 
@@ -147,7 +158,7 @@ function Home() {
       sessionStorage.getItem('eventBasicdata') && sessionStorage.removeItem('eventBasicdata');
       sessionStorage.setItem('eventBasicdata', JSON.stringify({
         data: eventLaunchData,
-        nextPath: '/requirements'
+        nextPath: '/event/requirements'
       }));
       navigate("/login")
     }
@@ -184,7 +195,6 @@ function Home() {
 
   useEffect(() => {
     fetchServiceTypes();
-    checkEventCreated();
   }, [])
 
 
@@ -197,14 +207,21 @@ function Home() {
 
   return (
     <>
-      {!launchToggle && (
+      {!launchToggle && !event.initiated ? (
         <div className="fixed bottom-12 right-12 rounded-full z-50">
           <button onClick={() => handleToggleForm()} className="customFixedButton text-xs md:text-md font-bold md:px-4 py-2">
             <span>Create an event</span>
           </button>
+        </div>
+      ) : event.status === 'LAUNCHED' && (
+        <div className="fixed bottom-12 right-12 rounded-full z-50">
+          <Link to={"event/requirements"} className="customFixedButton text-xs md:text-md font-bold md:px-4 py-2">
+            <span>{`Continue with ${event.name}`}</span>
+          </Link>
         </div>)
+
       }
-      <div className={`${launchToggle ? 'fixed ' : 'hidden'} bottom-7 p-5 right-7 z-40 bg-black bg-opacity-60 rounded-lg md:w-64 md:h-fit xl:w-96`}>
+      <div className={`${launchToggle ? 'fixed ' : 'hidden'} bottom-7 p-5 right-7 z-40 bg-black bg-opacity-60 rounded-lg md:w-72 md:h-fit xl:w-2/6`}>
         {/* <div> */}
         <form onSubmit={(e) => launchEvent(e)}>
           <button
@@ -220,13 +237,13 @@ function Home() {
           <div className="p-3 sm:mb-3 mb-6 md:mb-10 font-black tracking-wider uppercase bg-gray-300 w-full rounded-md">
             Create an event
           </div>
-          <div className="p-3 md:pl-4 md:pr-10 mb-2 md:h-3/5 flex flex-col justify-start gap-3 bg-gray-200 w-full rounded-md">
-            <div className="grid gap-4 grid-cols-2 w-full">
+          <div className="p-3 md:pl-4 md:pr-10 mb-2 md:h-3/5 flex flex-col justify-start gap-2 bg-gray-200 w-full rounded-md">
+            <div className="grid gap-1 grid-cols-2 w-full">
 
               {inputs.map((input) => {
                 return (
                   <div key={input.keyId} className={input.wrapperClass}>
-                    <div className="mt-2 w-full rounded-md">
+                    <div className="mt-1 w-full rounded-md">
                       <label className={input.labelclass} htmlFor={input.id}>{input.label}</label>
                       <input
                         type={input.type}
@@ -243,7 +260,7 @@ function Home() {
               })}
             </div>
             <div>
-              <label className="p-1 align-middle font-bold" htmlFor="addService">Event Type</label>
+              <label className="block text-sm font-medium text-gray-400" htmlFor="event_cat">Event Type</label>
               <div className="bg-white mt-2 w-full shadow-xl rounded-md">
                 {/* <input type="text" id="addService" placeholder="Enter the name of your service..." className="placeholder:text-slate-400 border-0 w-full placeholder-middle focus:ring-1 bg-transparent focus:outline-0 h-10 pl-4 flex-1 w-full cursor-text rounded-md" /> */}
                 <select
