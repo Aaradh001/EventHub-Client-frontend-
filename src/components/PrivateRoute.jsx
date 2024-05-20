@@ -9,6 +9,7 @@ function PrivateRoute({ children }) {
   useEffect(() => {
     if (!authentication_user.isAuthenticated) {
       console.log("loginnnnn");
+      return <Loader />;
       navigate('/login');
     }
   }, [authentication_user.isAuthenticated, navigate]);

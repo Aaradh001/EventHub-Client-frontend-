@@ -16,6 +16,8 @@ import Profile from "../pages/client/Profile";
 import LoaderHome from "../pages/common/LoaderHome";
 import EventLayout from "../pages/event/EventLayout";
 import DashboardLayout from "./DashboardLayout";
+import AllVenues from "../pages/venues/AllVenues";
+import VenueDetails from "../pages/venues/VenueDetails";
 const Layout = lazy(() => import('./Layout'));
 const Home = lazy(() => import('../pages/client/Home'));
 const Requirement = lazy(() => import('../pages/event/Requirement'));
@@ -51,6 +53,7 @@ function ClientWrapper() {
         },
       })
         .then((res) => {
+          console.log("the wrapper auth  :",res);
           dispatch(
             set_Authentication({
               name: res.data.client.username,
@@ -59,6 +62,10 @@ function ClientWrapper() {
               loading: false
             })
           );
+          setTimeout(()=>{
+            console.log("checking for authentication",authentication_user.isAuthenticated);
+
+          },5000)
         });
     } catch (error) {
       localStorage.clear()
@@ -69,7 +76,7 @@ function ClientWrapper() {
           profileImage: null,
           loading: true
         })
-      );
+      )
     }
   };
 
@@ -85,9 +92,7 @@ function ClientWrapper() {
       })
         .then((res) => {
           if (res.status == 200) {
-
-            console.log("from wrapper", res);
-            if (res.data.current_event){
+            if (res.data.current_event) {
               dispatch(
                 set_Event({
                   event_id: res.data.current_event.event_id,
@@ -97,7 +102,7 @@ function ClientWrapper() {
                   end_date: res.data.current_event.end_date,
                   event_cat: res.data.current_event.event_cat,
                   guest_count: res.data.current_event.guest_count,
-                  status : res.data.current_event.status,
+                  status: res.data.current_event.event_stage,
                   initiated: true,
                   is_completed: res.data.current_event.is_completed
                 })
@@ -114,14 +119,13 @@ function ClientWrapper() {
           end_date: null,
           event_cat: null,
           guest_count: null,
-          initiated:false,
+          initiated: false,
           is_completed: false,
           status: ""
         })
       );
     }
   }
-
 
   useEffect(() => {
     const token = localStorage.getItem("access");
@@ -130,10 +134,14 @@ function ClientWrapper() {
         fetchUserData(BASE_URL, token);
       }
     }
-
-    if (!event.launched) {
-      checkEventCreated(BASE_URL, token);
+console.log(authentication_user.isAuthenticated);
+    if (authentication_user.isAuthenticated) {
+      console.log("status   :",event.status);
+      if (!event.initiated) {
+        checkEventCreated(BASE_URL, token);
+      }
     }
+
   }, []);
 
   return (
@@ -150,6 +158,8 @@ function ClientWrapper() {
             <Route index element={<PrivateRoute> <Profile /> </PrivateRoute>} />
           </Route>
           <Route path="event" element={<PrivateRoute> <EventLayout /> </PrivateRoute>}>
+            <Route path="venues" element={<Suspense fallback={<LoaderHome />}><AllVenues /></Suspense>} />
+            <Route path="venues_details/:id" element={<Suspense fallback={<LoaderHome />}><VenueDetails /></Suspense>} />
             <Route path="requirements" element={<Suspense fallback={<LoaderHome />}><Requirement /></Suspense>} />
           </Route>
         </Route>

@@ -12,7 +12,8 @@ export const eventSlice = createSlice({
     guest_count: null,
     initiated:false,
     is_completed: false,
-    status: ""
+    status: "",
+    venue:""
   },
 reducers: {
     set_Event: (state, action) => {
@@ -26,6 +27,8 @@ reducers: {
         state.initiated = action.payload.initiated;
         state.is_completed = action.payload.is_completed;
         state.status = action.payload.status;
+        state.venue = action.payload.venue;
+
     },
   },
 });

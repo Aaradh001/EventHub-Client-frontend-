@@ -5,13 +5,17 @@ import { Link, useNavigate } from "react-router-dom";
 import CarouselComponent from "../../components/subFeatureComponents/Carousel";
 import FlowAnimation from "../../components/subFeatureComponents/FlowAnimation";
 import SlickSlider from "../../components/subFeatureComponents/SlickSlider";
+
 import axios from "axios";
 import { BASE_URL } from "../../constants/constants";
 import { TError } from "../../components/subFeatureComponents/Toastify";
 import "../../assets/styles/customStyle.css"
+import { set_Event } from "../../redux/event/eventSlice";
 
 
 function Home() {
+  const dispatch = useDispatch();
+
   const [eventLaunchData, setEventLaunchData] = useState({
     name: "",
     event_cat: "",
@@ -135,14 +139,16 @@ function Home() {
               guest_count: res.data.guest_count,
               initiated: true,
               is_completed: res.data.is_completed,
-              status: res.data.status
+              status: res.data.event_stage
             }))
           sessionStorage.getItem('eventBasicdata') && sessionStorage.removeItem('eventBasicdata')
+          navigate('/event/requirements')
+
         };
       }
       catch (error) {
         console.log(error);
-        TError(error.response.data)
+        TError(error.response)
         setLaunchToggle(false)
         setEventLaunchData({
           name: "",
@@ -194,6 +200,7 @@ function Home() {
   };
 
   useEffect(() => {
+
     fetchServiceTypes();
   }, [])
 
@@ -285,7 +292,6 @@ function Home() {
           </div>
         </form >
       </div >
-
       <section className="relative h-fit w-full">
         <div className="h-56 sm:h-64 md:h-96 w-full">
           <CarouselComponent />
@@ -302,5 +308,4 @@ function Home() {
     </>
   );
 }
-
 export default Home;

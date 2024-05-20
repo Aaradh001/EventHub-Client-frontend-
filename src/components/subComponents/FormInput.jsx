@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../assets/styles/formValidationStyle.css"
 
 const FormInput = (props) => {
@@ -17,7 +17,7 @@ const FormInput = (props) => {
       >
         {label}
       </label>
-      <input {...inputProps} onChange={onChange} onBlur={handleFocus} focused={focused.toString()} />
+      <input {...inputProps} onKeyUp={(e) => onKeyUp(e, props)} onChange={(e) => onChange(e, inputProps)} onBlur={handleFocus} focused={focused.toString()} /><span className="span-error p-2">{error}</span><div className=" flex flex-wrap" />
       <span className="span-error p-2">{error}</span>
     </div>
   );

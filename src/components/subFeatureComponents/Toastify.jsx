@@ -8,7 +8,7 @@ function Toastify() {
   )
 }
 
-export const TError = (message) => {
+export const TError = (message, duration = null) => {
   toast.error(`${message}`, {
     position: "top-left",
     autoClose: 4000,
@@ -23,7 +23,7 @@ export const TError = (message) => {
 }
 
 
-export const TOwnerError = (message) => {
+export const TOwnerError = (message, duration = null) => {
   toast.error(`${message}`, {
     position: "top-center",
     autoClose: 4000,
@@ -37,11 +37,10 @@ export const TOwnerError = (message) => {
   });
 }
 
-
-export const TSuccess = (message) => {
+export const TSuccess = (message, duration = null) => {
   toast.success(`${message}`, {
     position: "top-center",
-    autoClose: 3999,
+    autoClose: !duration ?? 4000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: true,
@@ -51,7 +50,8 @@ export const TSuccess = (message) => {
     transition: Zoom,
   });
 }
-export const TInfo = (message) => {
+
+export const TInfo = (message, duration = null) => {
   toast.info(`${message}`, {
     position: "top-center",
     autoClose: 1999,
@@ -64,7 +64,8 @@ export const TInfo = (message) => {
     transition: Zoom,
   });
 }
-export const TWarning = (message) => {
+
+export const TWarning = (message, duration = null) => {
   toast.warn(`${message}`, {
     position: "top-center",
     autoClose: 3999,
@@ -78,8 +79,7 @@ export const TWarning = (message) => {
   });
 }
 
-
-export const TPromise = (message) => {
+export const TPromise = (message, duration = null) => {
   toast.success(`${message}`, {
     position: "top-right",
     autoClose: 5000,
@@ -97,7 +97,7 @@ export const TUpdate = (id, message, type) => {
   toast.update(id, { render: message, type: type, isLoading: false, progress: undefined, closeOnClick: true, autoClose: 5000, });
 }
 
-export const TLoading = (message) => {
+export const TLoading = (message, duration = null) => {
   return toast.loading(message, { closeOnClick: true, autoClose: 5000, });
 }
 

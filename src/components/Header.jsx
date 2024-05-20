@@ -28,6 +28,7 @@ function Header() {
       })
     );
     navigate("/");
+    // sessionStorage.clear()
     TInfo("You have logged out")
   };
 
@@ -46,7 +47,7 @@ function Header() {
   return (
     <>
       <nav className={`${isOpaque ? 'bg-gray-100 shadow-lg' : currentPath.pathname === '/' ? open? 'bg-gray-100' : 'bg-transparent' : 'bg-gray-100 shadow-lg'} fixed transition-all md:h-32 z-40 md:h-32 h-44 transition w-full lg:max-w-[1500px] text-gray-700 dark-mode:text-gray-200 `}>
-        <div className={`text-center w-full h-8 z-40 text-end bg-black ${authentication_user.isAuthenticated ? 'lg:py-1  text-gray-300' : 'lg:py-4'}`}>
+        <div className={`w-full h-8 z-40 text-end bg-black ${authentication_user.isAuthenticated ? 'lg:py-1  text-gray-300' : 'lg:py-4'}`}>
           <span className="mr-8">{authentication_user.isAuthenticated && `Welcome ${authentication_user.name}`}</span></div>
         {/* <nav className={"bg-gray-100 fixed transition-opacity z-10 transition w-screen text-gray-700 dark-mode:text-gray-200 dark-mode:bg-gray-800"}> */}
         <div className="flex flex-col px-4 md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
@@ -91,7 +92,8 @@ function Header() {
           <nav className={`${isOpaque ? 'bg-transparent' : currentPath.pathname === '/' ? open?'text-black' : 'text-white' : 'bg-transparent'} flex-col ${open ? 'flex bg-gray-100' : 'hidden'} pb-4 md:pb-0 md:flex md:justify-end md:items-center md:flex-row`}>
             {/* <a className="px-4 py-2 mt-2 text-sm font-semibold text-gray-900 bg-gray-200 rounded-lg dark-mode:bg-gray-700 dark-mode:hover:bg-gray-600 dark-mode:focus:bg-gray-600 dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:text-gray-200 md:mt-0 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#">Blog</a> */}
             <NavLink exact='true' to={'/'} activeclassname="navlink-active" className="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:m  l-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">Home</NavLink>
-            <a className="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#">Services</a>
+            <NavLink  to={'event/venues'} activeclassname="navlink-active" className="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:m  l-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">Venues</NavLink>
+            {/* <a className="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#">Services</a> */}
             <a className="px-4 py-2 mt-2 text-sm font-semibold bg-transparent rounded-lg md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline" href="#">Contact</a>
             <div className="relative" onClick={() => setDropDownOpen((prev) => prev = !prev)}>
               <div className="flex flex-row gap-4 justify-between items-center w-full px-4 py-2 mt-2 text-sm font-semibold text-left bg-transparent rounded-lg dark-mode:bg-transparent dark-mode:focus:text-white dark-mode:hover:text-white dark-mode:focus:bg-gray-600 dark-mode:hover:bg-gray-600 md:w-auto md:mt-0 md:ml-4 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline">

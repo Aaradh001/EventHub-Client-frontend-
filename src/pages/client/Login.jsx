@@ -22,6 +22,7 @@ function Login() {
   // const { state } = useLocation();
   const [formError, setFormError] = useState([]);
   const baseURL = BASE_URL;
+  const token = localStorage.getItem("access")
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -70,7 +71,6 @@ function Login() {
         localStorage.setItem("refresh", res.data.refresh);
         console.log(res.data);
         const decodedData = jwtDecode(res.data.access)
-        console.log(decodedData);
         dispatch(
           set_Authentication({
             name: decodedData.username,
@@ -81,7 +81,42 @@ function Login() {
         const savedData = sessionStorage.getItem('eventBasicdata')
         const eventBasicdata = savedData ? JSON.parse(savedData) : null
         if(eventBasicdata){
-          navigate(eventBasicdata.nextPath)
+          try {
+            const res = await axios.post(
+              baseURL + "event/events/",
+              eventBasicdata.data, {
+              headers: {
+                "Content-type": "application/json",
+                authorization: `Bearer ${token}`,
+                Accept: "application/json",
+    
+              },
+            }
+            );
+            if (res.status === 201) {
+              console.log(res);
+              dispatch(
+                set_Event({
+                  event_id: res.data.event_id,
+                  name: res.data.name,
+                  thumbnail: res.data.thumbnail,
+                  start_date: res.data.start_date,
+                  end_date: res.data.end_date,
+                  event_cat: res.data.event_cat,
+                  guest_count: res.data.guest_count,
+                  initiated: true,
+                  is_completed: res.data.is_completed,
+                  status: res.data.event_stage
+                }))
+                navigate(eventBasicdata.nextPath)
+                sessionStorage.getItem('eventBasicdata') && sessionStorage.removeItem('eventBasicdata')
+                
+            };
+          }
+          catch (error) {
+            console.log(error);
+            TError(error.response)
+          }
           // sessionStorage.removeItem('eventBasicdata')
 
         }else{
