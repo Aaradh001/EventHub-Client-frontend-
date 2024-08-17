@@ -130,7 +130,8 @@ function Home() {
           console.log(res);
           dispatch(
             set_Event({
-              event_id: res.data.event_id,
+              event_id: res.data.id,
+              eventCustomid: res.data.event_id,
               name: res.data.name,
               thumbnail: res.data.thumbnail,
               start_date: res.data.start_date,
@@ -178,7 +179,6 @@ function Home() {
     }))
   };
 
-  console.log("the current component main state", eventLaunchData);
 
   async function fetchServiceTypes() {
     try {
@@ -191,7 +191,7 @@ function Home() {
       })
         .then((res) => {
           setServiceTypes(res.data.results)
-          console.log("From service types", res.data.results);
+          console.log(res.data.results);
         });
     } catch (error) {
       TError("Data fetching failed !!")

@@ -46,7 +46,7 @@ function Header() {
 
   return (
     <>
-      <nav className={`${isOpaque ? 'bg-gray-100 shadow-lg' : currentPath.pathname === '/' ? open? 'bg-gray-100' : 'bg-transparent' : 'bg-gray-100 shadow-lg'} fixed transition-all md:h-32 z-40 md:h-32 h-44 transition w-full lg:max-w-[1500px] text-gray-700 dark-mode:text-gray-200 `}>
+      <nav className={`${isOpaque ? 'bg-gray-100 shadow-lg' : currentPath.pathname === '/' ? open? 'bg-gray-100' : 'bg-transparent' : 'bg-gray-100 '} fixed transition-all md:h-32 z-40 md:h-32 h-44 transition w-full lg:max-w-[1500px] text-gray-700 dark-mode:text-gray-200 `}>
         <div className={`w-full h-8 z-40 text-end bg-black ${authentication_user.isAuthenticated ? 'lg:py-1  text-gray-300' : 'lg:py-4'}`}>
           <span className="mr-8">{authentication_user.isAuthenticated && `Welcome ${authentication_user.name}`}</span></div>
         {/* <nav className={"bg-gray-100 fixed transition-opacity z-10 transition w-screen text-gray-700 dark-mode:text-gray-200 dark-mode:bg-gray-800"}> */}

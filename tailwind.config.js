@@ -9,6 +9,14 @@ export default {
   ],
   theme: {
     extend: {
+      borderWidth:{
+        2.5: '3px',
+      },
+      colors: {
+        customBlue: '#7fdbf7',
+        customPink: '#fe79f1',
+        customLightPink: '#ebb2fe',
+      },
     },
   },
   plugins: [

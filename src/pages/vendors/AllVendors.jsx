@@ -4,11 +4,11 @@ import CustomCard from '../../components/subFeatureComponents/Card'
 import { BASE_URL } from '../../constants/constants'
 import axios from 'axios';
 import { TError, TSuccess } from '../../components/subFeatureComponents/Toastify';
-import CardImage from '../../components/subFeatureComponents/CardImage';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import CardImageVendor from '../../components/subFeatureComponents/CardImageVendor';
 
-function AllVenues() {
+function AllVendors() {
 
 
     const baseURL = BASE_URL;
@@ -18,9 +18,9 @@ function AllVenues() {
     const token = localStorage.getItem("access");
 
     let [typeSelected, setTypeSelected] = useState(new Set())
-    const [selectedVenue, setSelectedVenue] = useState(null)
-    let [venuesList, setVenuesList] = useState([])
-    let [tempVenuesList, setTempVenuesList] = useState([])
+    const [selectedVendor, setSelectedVendor] = useState(null)
+    let [vendorList, setVendorList] = useState([])
+    let [tempVendorList, setTempVendorList] = useState([])
 
 
 
@@ -36,25 +36,30 @@ function AllVenues() {
         }
     }
 
-    useEffect(() => {
-        console.log(typeSelected.values());
-        if (Array.from(typeSelected.values()).length) {
-            let newDatas = tempVenuesList.filter((item) => {
-                return typeSelected.has(item.venue_type)
-            })
-            setVenuesList(newDatas);
-        } else {
-            setVenuesList(tempVenuesList)
-        }
-    }, [typeSelected])
+    // useEffect(() => {
+    //     console.log(typeSelected.values());
+    //     if (Array.from(typeSelected.values()).length) {
+    //         let newDatas = tempVendorList.filter((item) => {
+    //             return typeSelected.has(item.venue_type)
+    //         })
+    //         setVendorList(newDatas);
+    //     } else {
+    //         setVendorList(setTempVendorList)
+    //     }
+    // }, [typeSelected])
 
 
     useEffect(() => {
-        axios.get(baseURL + "venue/venues").then((data) => {
+        axios.get(baseURL + "event/vendors",{headers: {
+            "Content-type": "application/json",
+            authorization: `Bearer ${token}`,
+            Accept: "application/json",
+
+          },}).then((data) => {
             let response = data.data.results.results;
-            console.log("from venues", response);
-            setVenuesList(response);
-            setTempVenuesList(response);
+            console.log("from vendors", response);
+            setVendorList(response);
+            setTempVendorList(response);
         }).catch((err) => {
             console.log(err);
             TError("Data fetching failer")
@@ -67,7 +72,7 @@ function AllVenues() {
 
         if (searchKeyWord) {
             const query = searchKeyWord.toLowerCase();
-            const filteredItems = tempVenuesList.filter(venue => {
+            const filteredItems = setTempVendorList.filter(venue => {
                 const place = (venue.city + "" + venue.state).toLowerCase()
                 const name = venue.name.toLowerCase();
 
@@ -76,26 +81,25 @@ function AllVenues() {
                 }
                 return false;
             })
-            if (filteredItems.length != tempVenuesList.length) {
-                setVenuesList(filteredItems)
+            if (filteredItems.length != setTempVendorList.length) {
+                setVendorList(filteredItems)
             }
         } else {
-            setVenuesList(tempVenuesList)
+            setVendorList(setTempVendorList)
         }
     }
 
-    function handleChangeVenue(e) {
-        console.log("recahed", e.target.value);
-        setSelectedVenue(e.target.value);
+    function handleChangeVendor(e) {
+        console.log("reached", e.target.value);
+        setSelectedVendor(e.target.value);
     }
 
 
     async function handleVenueSubmit() {
-        console.log(event.eventCustomid);
         try {
             const res = await axios.put(
                 baseURL + `event/event-detail/${event.event_id}/`,
-                { venue: selectedVenue }, {
+                { organiser: selectedVendor }, {
                 headers: {
                     "Content-type": "application/json",
                     authorization: `Bearer ${token}`,
@@ -106,8 +110,8 @@ function AllVenues() {
             );
             console.log(res);
             if (res.status === 200) {
-                TSuccess(`Venue added successfully`)
-                navigate('/event/vendors')
+                TSuccess(`Vendor added successfully`)
+                // navigate('')
             }
 
         }
@@ -122,16 +126,16 @@ function AllVenues() {
     return (
         <section className="w-full  bg-white-100">
             <div className='p-8 bg-gradient-to-b from-red-100 md:gap-y-10 md:flex md:flex-col md:px-6 lg:px-8 text-slate-700'>
-                <h1 className='py-4 md:px-3 text-xl md:text-5xl mr-auto roboto-bolder '>All Venues</h1>
+                <h1 className='py-4 md:px-3 text-xl md:text-5xl mr-auto roboto-bolder '>All Vendors</h1>
             </div>
 
 
 
             <div className=' p-8'>
-                <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">Technology</h3>
+                {/* <h3 className="mb-4 font-semibold text-gray-900 dark:text-white">Technology</h3> */}
 
                 <div className="flex   md:gap-x-10">
-                    <div className="w-1/5">
+                    {/* <div className="w-1/5">
 
                         <ul className="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                             <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
@@ -156,8 +160,8 @@ function AllVenues() {
 
                         </ul>
 
-                    </div>
-                    <div className="w-4/5">
+                    </div> */}
+                    <div className="w-full ml-16">
                         <div className="flex  gap-10 justify-between items-center">
 
                             <div className='md:max-w-md md:w-full'>
@@ -180,20 +184,20 @@ function AllVenues() {
                         <div className='mt-5'>
                             <div className="grid grid-cols-3 gap-5">
                                 {
-                                    venuesList.map((item, index) => {
+                                    vendorList.map((item, index) => {
                                         return (
-                                            <CardImage
+                                            <CardImageVendor
                                                 isAuthenticated={authentication_user.isAuthenticated}
-                                                url={`/event/venues_details/${item.id}`}
-                                                status={item.reservation_status}
+                                                url={`/event/vendor-details/${item.id}`}
+                                                // status={item.reservation_status}
                                                 index={index}
-                                                type={item.venue_type}
+                                                website={item.website}
                                                 state={item.state}
-                                                onChange={handleChangeVenue}
-                                                image={item.thumbnail}
+                                                onChange={handleChangeVendor}
+                                                image={item.logo}
                                                 key={item.id}
                                                 id={item.id}
-                                                name={item.name}
+                                                name={item.company_name}
                                                 city={item.city}
                                             />
                                         )
@@ -215,4 +219,4 @@ function AllVenues() {
     )
 }
 
-export default AllVenues
+export default AllVendors

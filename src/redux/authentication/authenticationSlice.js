@@ -14,7 +14,6 @@ export const authenticationSlice = createSlice({
       state.profileImage = action.payload.profile_image;
       state.isAuthenticated = action.payload.isAuthenticated;
       state.loading = action.payload.loading;
-      console.log("from reducer in the redux",action.payload.isAuthenticated);
     },
   },
 });

@@ -12,7 +12,7 @@ function App() {
 
   return (
     <Router>
-      < ToastContainer/>
+      <ToastContainer />
       <Provider store={clientStore}>
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
           <Routes>

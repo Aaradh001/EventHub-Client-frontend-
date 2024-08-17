@@ -13,11 +13,14 @@ export const eventSlice = createSlice({
     initiated:false,
     is_completed: false,
     status: "",
-    venue:""
+    venue:"",
+    eventCustomid:"",
+    client: ""
   },
 reducers: {
     set_Event: (state, action) => {
         state.event_id = action.payload.event_id;
+        state.eventCustomid = action.payload.eventCustomid;
         state.name = action.payload.name;
         state.thumbnail = action.payload.thumbnail;
         state.start_date = action.payload.start_date;
@@ -28,6 +31,7 @@ reducers: {
         state.is_completed = action.payload.is_completed;
         state.status = action.payload.status;
         state.venue = action.payload.venue;
+        state.client = action.payload.client;
 
     },
   },

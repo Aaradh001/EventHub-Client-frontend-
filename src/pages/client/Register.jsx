@@ -172,8 +172,8 @@ function Register() {
       localStorage.setItem('access', res.data.access)
       localStorage.setItem('refresh', res.data.refresh)
 
-      console.log("res",res.data);
-      console.log("the decoded data   :",jwtDecode(res.data.access));
+      console.log("res", res.data);
+      console.log("the decoded data   :", jwtDecode(res.data.access));
 
       dispatch(
         set_Authentication({
@@ -198,7 +198,7 @@ function Register() {
 
 
   return (
-   
+
     <>
       <LoginHeader />
       <main className="bg-black">
@@ -258,7 +258,7 @@ function Register() {
               </form>
             </div>
             <div className="text-sm text-gray-400">
-              <p className="text-center">Already have an account?<Link to="login" className="text-white ml-2 hover:underline">Login here</Link>
+              <p className="text-center">Already have an account?<Link to="/login" className="text-white ml-2 hover:underline">Login here</Link>
               </p>
             </div>
           </div>

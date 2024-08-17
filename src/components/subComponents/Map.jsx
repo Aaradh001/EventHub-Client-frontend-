@@ -58,6 +58,7 @@ const Map = (props) => {
             lat: selectedLocation.latitude,
             lng: selectedLocation.longitude
           }}
+
         />
       </>
     </GoogleMap>

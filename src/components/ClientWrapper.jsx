@@ -18,6 +18,9 @@ import EventLayout from "../pages/event/EventLayout";
 import DashboardLayout from "./DashboardLayout";
 import AllVenues from "../pages/venues/AllVenues";
 import VenueDetails from "../pages/venues/VenueDetails";
+import AllVendors from "../pages/vendors/AllVendors";
+import VendorDetails from "../pages/vendors/VendorDetails";
+import EventHub from "../pages/event/EventHub";
 const Layout = lazy(() => import('./Layout'));
 const Home = lazy(() => import('../pages/client/Home'));
 const Requirement = lazy(() => import('../pages/event/Requirement'));
@@ -53,7 +56,6 @@ function ClientWrapper() {
         },
       })
         .then((res) => {
-          console.log("the wrapper auth  :",res);
           dispatch(
             set_Authentication({
               name: res.data.client.username,
@@ -62,10 +64,6 @@ function ClientWrapper() {
               loading: false
             })
           );
-          setTimeout(()=>{
-            console.log("checking for authentication",authentication_user.isAuthenticated);
-
-          },5000)
         });
     } catch (error) {
       localStorage.clear()
@@ -80,8 +78,10 @@ function ClientWrapper() {
     }
   };
 
-
   async function checkEventCreated(baseURL, token) {
+    if (!authentication_user.isAuthenticated) {
+      return
+    }
     try {
       await axios.get(baseURL + "event/events", {
         headers: {
@@ -92,10 +92,12 @@ function ClientWrapper() {
       })
         .then((res) => {
           if (res.status == 200) {
+            console.log(res);
             if (res.data.current_event) {
               dispatch(
                 set_Event({
-                  event_id: res.data.current_event.event_id,
+                  event_id: res.data.current_event.id,
+                  eventCustomid: res.data.event_id,
                   name: res.data.current_event.name,
                   thumbnail: res.data.current_event.thumbnail,
                   start_date: res.data.current_event.start_date,
@@ -103,6 +105,7 @@ function ClientWrapper() {
                   event_cat: res.data.current_event.event_cat,
                   guest_count: res.data.current_event.guest_count,
                   status: res.data.current_event.event_stage,
+                  client: res.data.current_event.client,
                   initiated: true,
                   is_completed: res.data.current_event.is_completed
                 })
@@ -116,6 +119,7 @@ function ClientWrapper() {
           name: "",
           thumbnail: null,
           start_date: null,
+          eventCustomid: "",
           end_date: null,
           event_cat: null,
           guest_count: null,
@@ -129,19 +133,20 @@ function ClientWrapper() {
 
   useEffect(() => {
     const token = localStorage.getItem("access");
-    if (!authentication_user.isAuthenticated) {
-      if (checkTokenValidation()) {
-        fetchUserData(BASE_URL, token);
-      }
-    }
-console.log(authentication_user.isAuthenticated);
     if (authentication_user.isAuthenticated) {
-      console.log("status   :",event.status);
       if (!event.initiated) {
         checkEventCreated(BASE_URL, token);
       }
     }
 
+  }, [authentication_user]);
+  useEffect(() => {
+    const token = localStorage.getItem("access");
+    if (!authentication_user.isAuthenticated) {
+      if (checkTokenValidation()) {
+        fetchUserData(BASE_URL, token);
+      }
+    }
   }, []);
 
   return (
@@ -158,9 +163,13 @@ console.log(authentication_user.isAuthenticated);
             <Route index element={<PrivateRoute> <Profile /> </PrivateRoute>} />
           </Route>
           <Route path="event" element={<PrivateRoute> <EventLayout /> </PrivateRoute>}>
+            <Route path="" element={<Suspense fallback={<LoaderHome />}><EventHub /></Suspense>} />
             <Route path="venues" element={<Suspense fallback={<LoaderHome />}><AllVenues /></Suspense>} />
             <Route path="venues_details/:id" element={<Suspense fallback={<LoaderHome />}><VenueDetails /></Suspense>} />
-            <Route path="requirements" element={<Suspense fallback={<LoaderHome />}><Requirement /></Suspense>} />
+            <Route path="vendors" element={<Suspense fallback={<LoaderHome />}><AllVendors /></Suspense>} />
+            <Route path="vendor-details/:id" element={<Suspense fallback={<LoaderHome />}><VendorDetails /></Suspense>} />
+            <Route path="requirements" element={<Suspense fallback={<LoaderHome />}><PrivateRoute><Requirement /></PrivateRoute>
+            </Suspense>} />
           </Route>
         </Route>
         {/* Custom 404 page */}

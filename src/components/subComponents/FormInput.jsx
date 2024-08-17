@@ -17,7 +17,8 @@ const FormInput = (props) => {
       >
         {label}
       </label>
-      <input {...inputProps} onKeyUp={(e) => onKeyUp(e, props)} onChange={(e) => onChange(e, inputProps)} onBlur={handleFocus} focused={focused.toString()} /><span className="span-error p-2">{error}</span><div className=" flex flex-wrap" />
+      <input {...inputProps} onChange={(e) => onChange(e, inputProps)} onBlur={handleFocus} focused={focused.toString()} />
+      <div className=" flex flex-wrap" />
       <span className="span-error p-2">{error}</span>
     </div>
   );

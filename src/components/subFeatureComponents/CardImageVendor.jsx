@@ -1,24 +1,21 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function CardImage({ image, name, city, state, id, status, type, isAuthenticated, url, index, onChange }) {
+function CardImageVendor({ image, name, city, state, id, website, isAuthenticated, url, index, onChange }) {
     return (
         <div >
             <div className="relative max-w-sm bg-white border border-gray-200 rounded-md shadow dark:bg-gray-800 dark:border-gray-700">
                 <Link to={url}>
                     <img className="rounded-t-lg w-full h-52" src={image} alt="" />
-                    <div className={`fit availableStatus absolute top-3  p-5 pt-1 pb-1 rounded-lg text-white right-5 ${status == "AVAILABLE" ? " bg-green-500" : " bg-red-500"}`}>
+                    {/* <div className={`fit availableStatus absolute top-3  p-5 pt-1 pb-1 rounded-lg text-white right-5 ${status == "AVAILABLE" ? " bg-green-500" : " bg-red-500"}`}>
                         {status == "AVAILABLE" ? "Available" : "Not Available"}
-                    </div>
+                    </div> */}
                 </Link>
                 <div className="p-5">
                     <a href="#">
                         <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{name}</h5>
                     </a>
-                    <p className="mb-1 font-normal text-blue-700 dark:text-gray-400">
-                        Location : {city + " " + state}
-                    </p>
-                    <span>Venue Type : {type}</span>
+                    <span>Venue Type : {website}</span>
                     <div>
                         {
 
@@ -28,8 +25,8 @@ function CardImage({ image, name, city, state, id, status, type, isAuthenticated
                     </a> */}
                         {isAuthenticated &&
                             <div className='p-3 bg-green-100 rounded-md my-2 flex justify-start gap-6 items-center'>
-                                <input id={index} type="radio" value={id} onChange={onChange} name='venue' />
-                                <label htmlFor={index}> Select this venue</label>
+                                <input id={index} type="radio" value={id} onChange={onChange} name='vendor' />
+                                <label htmlFor={index}> Select this vendor</label>
 
                             </div>
                         }
@@ -40,4 +37,4 @@ function CardImage({ image, name, city, state, id, status, type, isAuthenticated
     )
 }
 
-export default CardImage
+export default CardImageVendor

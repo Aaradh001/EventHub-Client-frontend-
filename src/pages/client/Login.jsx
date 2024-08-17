@@ -69,7 +69,6 @@ function Login() {
       if (res.status === 200) {
         localStorage.setItem("access", res.data.access);
         localStorage.setItem("refresh", res.data.refresh);
-        console.log(res.data);
         const decodedData = jwtDecode(res.data.access)
         dispatch(
           set_Authentication({
@@ -80,7 +79,7 @@ function Login() {
         );
         const savedData = sessionStorage.getItem('eventBasicdata')
         const eventBasicdata = savedData ? JSON.parse(savedData) : null
-        if(eventBasicdata){
+        if (eventBasicdata) {
           try {
             const res = await axios.post(
               baseURL + "event/events/",
@@ -89,7 +88,7 @@ function Login() {
                 "Content-type": "application/json",
                 authorization: `Bearer ${token}`,
                 Accept: "application/json",
-    
+
               },
             }
             );
@@ -97,7 +96,8 @@ function Login() {
               console.log(res);
               dispatch(
                 set_Event({
-                  event_id: res.data.event_id,
+                  event_id: res.data.id,
+                  eventCustomid: res.data.event_id,
                   name: res.data.name,
                   thumbnail: res.data.thumbnail,
                   start_date: res.data.start_date,
@@ -108,9 +108,11 @@ function Login() {
                   is_completed: res.data.is_completed,
                   status: res.data.event_stage
                 }))
-                navigate(eventBasicdata.nextPath)
-                sessionStorage.getItem('eventBasicdata') && sessionStorage.removeItem('eventBasicdata')
-                
+              navigate(eventBasicdata.nextPath)
+              sessionStorage.getItem('eventBasicdata') && sessionStorage.removeItem('eventBasicdata')
+
+              navigate("/");
+              TSuccess("You have successfully logged in !!")
             };
           }
           catch (error) {
@@ -118,11 +120,11 @@ function Login() {
             TError(error.response)
           }
           // sessionStorage.removeItem('eventBasicdata')
-
-        }else{
+          
+        } else {
           navigate("/");
+          TSuccess("You have successfully logged in !!")
         }
-        TSuccess("You have successfully logged in !!")
         return res;
       }
     } catch (error) {
